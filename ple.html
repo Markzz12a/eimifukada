@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<title>HACK TERMINAL</title>
+<style>
+  body {
+    background-color: #000;
+    color: #0f0;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+    padding: 20px;
+  }
+  #hintContainer {
+    position: relative;
+    max-width: 400px;
+    margin: 20px auto;
+    border: 2px solid #0f0;
+  }
+  #hintImage {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  #hintOverlay {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background-color: rgba(0, 255, 0, 0.7);
+    color: black;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    pointer-events: none; /* ไม่บังคลิก */
+    display: none; /* ซ่อนโดย default */
+  }
+  input, button {
+    font-family: inherit;
+    font-size: 18px;
+    padding: 8px 15px;
+    background: #000;
+    color: #0f0;
+    border: 1px solid #0f0;
+    margin: 10px;
+  }
+  .hidden { display: none; }
+  .reward {
+    margin-top: 20px;
+    border: 2px dashed #0f0;
+    padding: 15px;
+  }
+</style>
+</head>
+<body>
+<h1>💻 ACCESS TERMINAL</h1>
+<div id="game">
+  <p id="levelLabel">LEVEL 1</p>
+  <div id="hintContainer">
+    <img id="hintImage" src="b1.png" alt="Hint">
+    <div id="hintOverlay">3 คำ</div>
+  </div>
+  <p>พิมพ์คำตอบที่คุณเห็นในภาพ:</p>
+  <input type="text" id="answerInput" placeholder="คำตอบ..." autocomplete="off">
+  <br>
+  <button onclick="submitAnswer()">SUBMIT</button>
+  <p id="feedback"></p>
+  <div class="reward hidden" id="rewardBox">
+    <p>🎁 คุณผ่านด่านแล้ว! ดาวน์โหลดรางวัล:</p>
+    <a id="downloadLink" href="#" download><button>⬇️ ดาวน์โหลดภาพ</button></a>
+    <br><br>
+    <button onclick="nextLevel()">➡️ ไปด่านต่อไป</button>
+  </div>
+</div>
+
+<div id="complete" class="hidden">
+  <h2>🎉 ยินดีด้วย คุณแฮกครบทุกด่านแล้ว!</h2>
+  <p>ทั้งหมด 4 ด่านสำเร็จ!</p>
+</div>
+
+<script>
+  const levels = [
+    { hint: 'b1.png', answer: 'ngo', prize: 'image1.jpg', showOverlay: true },
+    { hint: 'b2.webp', answer: 'mansome', prize: 'image2.png', showOverlay: false },
+    { hint: 'b3.jpg', answer: 'fat', prize: 'image3.jpg', showOverlay: false },
+    { hint: 'b4.jpg', answer: 'ball', prize: 'image4.jpg', showOverlay: false }
+  ];
+  let currentLevel = 0;
+
+  function submitAnswer() {
+    const userAnswer = document.getElementById("answerInput").value.trim().toLowerCase();
+    const correct = levels[currentLevel].answer.toLowerCase();
+
+    if (userAnswer === correct) {
+      document.getElementById("feedback").innerText = "✔️ ACCESS GRANTED!";
+      document.getElementById("rewardBox").classList.remove("hidden");
+      document.getElementById("downloadLink").href = levels[currentLevel].prize;
+    } else {
+      document.getElementById("feedback").innerText = "❌ ACCESS DENIED. ลองใหม่อีกครั้ง.";
+    }
+  }
+
+  function nextLevel() {
+    currentLevel++;
+    if (currentLevel >= levels.length) {
+      document.getElementById("game").classList.add("hidden");
+      document.getElementById("complete").classList.remove("hidden");
+    } else {
+      document.getElementById("rewardBox").classList.add("hidden");
+      document.getElementById("feedback").innerText = "";
+      document.getElementById("answerInput").value = "";
+      document.getElementById("hintImage").src = levels[currentLevel].hint;
+      document.getElementById("levelLabel").innerText = "LEVEL " + (currentLevel + 1);
+
+      // แสดง/ซ่อน overlay ข้อความ "3 คำ" บนภาพ
+      document.getElementById("hintOverlay").style.display = levels[currentLevel].showOverlay ? "block" : "none";
+    }
+  }
+
+  // แสดง overlay ที่ด่านแรกตอนโหลดหน้า
+  document.getElementById("hintOverlay").style.display = levels[0].showOverlay ? "block" : "none";
+</script>
+</body>
+</html>
